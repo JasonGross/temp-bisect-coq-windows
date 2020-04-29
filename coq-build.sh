@@ -20,7 +20,7 @@ set -ex
 
 git clean -qxfd || { end 'invalid clean' $?; exit 125; }
 ./configure -local || { end 'invalid configure' $?; exit 125; }
-make -j${NJOBS} --output-sync TIMED=1 || { end bad $?; exit 1; }
+make -j${NJOBS} --no-print-directory --output-sync TIMED=1 || { end bad $?; exit 1; }
 end good 0
 exit 0
 
