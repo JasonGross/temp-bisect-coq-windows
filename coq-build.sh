@@ -8,13 +8,20 @@ echo "::endgroup::"
 echo -n "::group::Build for Coq version "
 git log -1 --pretty=oneline
 
+function end() {
+    echo "::endgroup::"
+    echo -n "::group::Build Result ($1) for Coq version "
+    git log -1 --pretty=oneline
+    echo "Result: $2"
+    echo "::endgroup::"
+}
+
 set -ex
 
-git clean -qxfd || { echo "::endgroup::"; exit 125; }
-./configure -local || { echo "::endgroup::"; exit 125; }
-make -j${NJOBS} --output-sync TIMED=1 || { echo "::endgroup::"; exit 1; }
-
-echo "::endgroup::"
+git clean -qxfd || { end 'invalid clean' $?; exit 125; }
+./configure -local || { end 'invalid configure' $?; exit 125; }
+make -j${NJOBS} --output-sync TIMED=1 || { end bad $?; exit 1; }
+end good 0
 exit 0
 
 # git bisect start bad good
