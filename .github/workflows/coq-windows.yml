@@ -14,7 +14,6 @@ jobs:
     env:
       NJOBS: "2"
       COQ_VERSION: "V8.11.1"
-      SKIP_BEDROCK2: "1"
 
     # initial steps copied from https://github.com/coq/coq/blob/76d8a38a4591c604795c5429ffcbbe9daaa8945d/azure-pipelines.yml#L9-L39
     steps:
@@ -67,21 +66,6 @@ jobs:
         C:\cygwin64\bin\bash -l coq\dev\ci\azure-opam.sh
       shell: cmd
 
-    - name: Configure Coq
-      run: |
-        C:\cygwin64\bin\bash -l -c 'cd coq; ./configure -prefix=/usr/local'
-      shell: cmd
-
-    - name: Build Coq
-      run: |
-        C:\cygwin64\bin\bash -l -c 'cd coq; make -j${NJOBS}'
-      shell: cmd
-
-    - name: Install Coq
-      run: |
-        C:\cygwin64\bin\bash -l -c 'cd coq; make install'
-      shell: cmd
-
     - name: echo build params
       run: |
         ECHO ::group::wmic cpu get caption, deviceid, name, numberofcores, maxclockspeed, status
@@ -99,50 +83,12 @@ jobs:
         ECHO ::group::ocamlc -config
         C:\cygwin64\bin\bash -l -c 'ocamlc -config'
         ECHO ::endgroup::
-        ECHO ::group::coqc --config
-        C:\cygwin64\bin\bash -l -c 'coqc --config'
-        ECHO ::endgroup::
-        ECHO ::group::coqc --version
-        C:\cygwin64\bin\bash -l -c 'coqc --version'
-        ECHO ::endgroup::
-        ECHO ::group::coqtop version
-        true | C:\cygwin64\bin\bash -l -c 'coqtop'
-        ECHO ::endgroup::
-        ECHO ::group::make printenv
-        C:\cygwin64\bin\bash -l -c 'cd "%cd%"; make printenv'
-        ECHO ::endgroup::
         ECHO ::group::PATH
         C:\cygwin64\bin\bash -l -c 'cd "%cd%"; echo "${PATH}"'
         ECHO ::endgroup::
       shell: cmd
-    - name: add Coq matcher
+
+    - name: Bisect
       run: |
-        C:\cygwin64\bin\bash -l -c 'cd "%cd%"; echo "::add-matcher::.github/coq.json"'
+        C:\cygwin64\bin\bash -l -c 'cd coq; %cd%/bisect.sh'
       shell: cmd
-    - name: deps
-      run: C:\cygwin64\bin\bash -l -c 'cd "%cd%"; etc/ci/github-actions-make.sh -j%NJOBS% deps'
-      shell: cmd
-    - name: all
-      run: C:\cygwin64\bin\bash -l -c 'cd "%cd%"; etc/ci/github-actions-make.sh -j%NJOBS% all'
-      shell: cmd
-    - name: upload OCaml files
-      uses: actions/upload-artifact@v1
-      with:
-        name: ExtractionOCaml
-        path: src/ExtractionOCaml
-    - name: display timing info
-      run: C:\cygwin64\bin\bash -l -c 'cd "%cd%"; cat time-of-build-pretty.log'
-      shell: cmd
-    - name: display per-line timing info
-      run: C:\cygwin64\bin\bash -l -c 'cd "%cd%"; etc/ci/github-actions-display-per-line-timing.sh'
-      shell: cmd
-#    - name: upload timing and .vo info
-#      uses: actions/upload-artifact@v1
-#      with:
-#        name: build-outputs
-#        path: .
-#      if: always ()
-    - name: validate
-      run: C:\cygwin64\bin\bash -l -c 'cd "%cd%"; make TIMED=1 validate COQCHKFLAGS="-o"'
-      shell: cmd
-      if: github.event_name != 'pull_request'
