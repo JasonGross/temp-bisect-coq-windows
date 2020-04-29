@@ -90,5 +90,5 @@ jobs:
 
     - name: Bisect
       run: |
-        C:\cygwin64\bin\bash -l -c 'cd coq; %cd%/bisect.sh'
+        C:\cygwin64\bin\bash -l -c 'cd coq; "%cd%/bisect.sh"'
       shell: cmd
