@@ -92,3 +92,8 @@ jobs:
       run: |
         C:\cygwin64\bin\bash -l -c 'cd coq; "%cd%/bisect.sh"'
       shell: cmd
+
+    - name: Bisect log
+      run: |
+        C:\cygwin64\bin\bash -l -c 'cd coq; git bisect log'
+      shell: cmd

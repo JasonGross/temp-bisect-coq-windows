@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+echo "::endgroup::"
 echo -n "::group::Coq version "
 git log -1 --pretty=oneline
 git log -1
@@ -10,13 +11,10 @@ git log -1 --pretty=oneline
 
 function end() {
     echo "::endgroup::"
-    echo -n "::group::Build Result ($1) for Coq version "
+    echo -n "::group::Build Result and bisect info ($1) for Coq version "
     git log -1 --pretty=oneline
     echo "Result: $2"
-    echo "::endgroup::"
 }
-
-set -ex
 
 git clean -qxfd || { end 'invalid clean' $?; exit 125; }
 ./configure -local || { end 'invalid configure' $?; exit 125; }
