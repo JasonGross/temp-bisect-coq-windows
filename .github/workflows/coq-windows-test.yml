@@ -12,6 +12,7 @@ jobs:
     runs-on: windows-latest
 
     strategy:
+      fail-fast: false
       matrix:
         coq_version: ["5001deed21e8f4027411cc6413a9d2b98e1bccee", "5001deed21e8f4027411cc6413a9d2b98e1bccee", "5001deed21e8f4027411cc6413a9d2b98e1bccee", "5001deed21e8f4027411cc6413a9d2b98e1bccee", "5001deed21e8f4027411cc6413a9d2b98e1bccee", "dc723c2aa614e6b31ef5a4c9764ff92c0860880e", "dc723c2aa614e6b31ef5a4c9764ff92c0860880e", "dc723c2aa614e6b31ef5a4c9764ff92c0860880e", "dc723c2aa614e6b31ef5a4c9764ff92c0860880e", "dc723c2aa614e6b31ef5a4c9764ff92c0860880e"]
 
